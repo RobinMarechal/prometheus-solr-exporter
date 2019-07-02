@@ -29,6 +29,7 @@ prometheus-solr-exporter --help
 | --------              | ----------- |
 | solr.address          | URI on which to scrape Solr. (default "http://localhost:8983") |
 | solr.context-path     | Solr webapp context path. (default "/solr") |
+| solr.version          | Solr version (Supported values are 6 or 7). Used if the exporter is unable to guess it from Solr. |
 | solr.pid-file         | Path to Solr pid file |
 | solr.timeout          | Timeout for trying to get stats from Solr. (default 5s) |
 | solr.excluded-core    | Regex to exclude core from monitoring|

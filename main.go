@@ -36,6 +36,7 @@ var (
 	solrExcludedCore = kingpin.Flag("solr.excluded-core", "Regex to exclude core from monitoring").Default("").String()
 	solrTimeout      = kingpin.Flag("solr.timeout", "Timeout for trying to get stats from Solr.").Default("5s").Duration()
 	solrPidFile      = kingpin.Flag("solr.pid-file", "").Default(pidFileHelpText).String()
+	solrVersion      = kingpin.Flag("solr.version", "Solr version (Supported values are 6 or 7). Used if the exporter is unable to guess it from Solr.").Default("0").Int()
 )
 
 func main() {
@@ -68,7 +69,7 @@ func main() {
 	prometheus.MustRegister(exporter)
 	prometheus.MustRegister(version.NewCollector("solr_exporter"))
 
-	jvmExporter, err := NewJVMCollector(*client, solrBaseURL)
+	jvmExporter, err := NewJVMCollector(*client, solrBaseURL, *solrVersion)
 	if err != nil {
 		log.Errorf("Failed to create JVM metrics collector: %v", err)
 	}

@@ -3,10 +3,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/blang/semver"
 	"io/ioutil"
 	"net/http"
 
-	"github.com/blang/semver"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/common/log"
 )
@@ -61,10 +61,11 @@ type JVMCollector struct {
 	client      http.Client
 	jvmURL      string
 	solrInfoURL string
+	solrVersion int
 }
 
 // NewJVMCollector returns a new Collector exposing solr jvm statistics.
-func NewJVMCollector(client http.Client, solrBaseURL string) (*JVMCollector, error) {
+func NewJVMCollector(client http.Client, solrBaseURL string, solrVersion int) (*JVMCollector, error) {
 	jvmURL := fmt.Sprintf("%s%s", solrBaseURL, jvmPath)
 	solrInfoURL := fmt.Sprintf("%s%s", solrBaseURL, solrInfoPath)
 	return &JVMCollector{
@@ -291,6 +292,7 @@ func NewJVMCollector(client http.Client, solrBaseURL string) (*JVMCollector, err
 		client:      client,
 		jvmURL:      jvmURL,
 		solrInfoURL: solrInfoURL,
+		solrVersion: solrVersion,
 	}, nil
 }
 
@@ -315,7 +317,14 @@ func (c *JVMCollector) Update(ch chan<- prometheus.Metric) error {
 
 	semanticVersion, err := semver.Make(infoSystem.Lucene.SolrVersion)
 	if err != nil {
-		return fmt.Errorf("Error parsing version string: %v", err)
+		if c.solrVersion == 0 {
+			return fmt.Errorf("Error parsing version string, and no backup version has been defined using flags: %v", err)
+		} else {
+			semanticVersion, err = semver.Make(fmt.Sprintf("%d.0.0", c.solrVersion))
+			if err != nil {
+				return fmt.Errorf("Error parsing version string, and backup version is invalid as well: %v", err)
+			}
+		}
 	}
 	semanticVersionSolr6, err := semver.Make("6.0.0")
 	semanticVersionSolr7, err := semver.Make("7.0.0")
