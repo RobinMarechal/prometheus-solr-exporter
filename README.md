@@ -1,8 +1,5 @@
 # Solr Exporter
 
-[![Docker Pulls](https://img.shields.io/docker/pulls/noony/prometheus-solr-exporter.svg?maxAge=604800)](https://hub.docker.com/r/noony/prometheus-solr-exporter)
-[![Go Report Card](https://goreportcard.com/badge/github.com/noony/prometheus-solr-exporter)](https://goreportcard.com/report/github.com/noony/prometheus-solr-exporter)
-
 Prometheus exporter for various metrics about Solr, written in Go.
 
 ### Installation
@@ -45,13 +42,9 @@ make build
 
 ### Testing
 
-[![Build Status](https://travis-ci.org/noony/prometheus-solr-exporter.png?branch=master)][travisci]
-
 ```bash
 make test
 ```
-
-[travisci]: https://travis-ci.org/noony/prometheus-solr-exporter
 
 ### Grafana dashboard
 
